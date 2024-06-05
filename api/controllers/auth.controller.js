@@ -1,12 +1,15 @@
 import User from '../models/user.model.js';
 import bcryptjs from "bcryptjs";
+import { errorHandler } from '../utils/error.js';
 
 
-export const signup = async(req, res)=>{
+export const signup = async(req, res, next)=>{
     const {username, email, password} =req.body;
 
     if(!username || !email || !password || username ==='' || email==='' || password===''){
-        return res.status(400).json({message: "all fields are required"});
+       next(errorHandler(400, 'All fields are required')); //custom error using the errorHandler in ./util.js/error.js
+                                                           //and passing it to the middleware in index.js to return a
+                                                           //json res.
     }
 
     const hashpassword = bcryptjs.hashSync(password, 10);
@@ -20,7 +23,7 @@ export const signup = async(req, res)=>{
         await newUser.save();
         res.json('signup successful');
      } catch (error) {
-        res.status(500).json({messgae: error});
+       next(error); //error from system, not the custom one also getting passed to the middleware in index.js
      }
         
 }
