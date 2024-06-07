@@ -4,7 +4,7 @@
 //be either shown or pass to the middle ware in the index.js
 
 export const errorHandler = (statusCode, message)=>{
-    const error = new Error();
+    const error = new Error(); //Error object instance
     error.statusCode = statusCode;
     error.message = message;
     return error;
