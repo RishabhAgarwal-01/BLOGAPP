@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard'
 import Project from './pages/Project'
 import Home from './pages/Home'
 import Header from './components/Header'
+import FooterComp from './components/Footer'
+
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +21,7 @@ function App() {
         <Route path="/dashboard" element= {<Dashboard/>} />
         <Route path="/projects" element= {<Project/>} />
       </Routes>
+      <FooterComp />
     </BrowserRouter>
     
   )
