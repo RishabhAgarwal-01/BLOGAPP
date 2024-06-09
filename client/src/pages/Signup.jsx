@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Label, TextInput, Alert, Spinner } from "flowbite-react";
 
+ 
 function Signup() {
   const [formData, setFormData] = useState({}); //state storing the formData as an object
   const [errorMessage, setErrorMessage] = useState(null);
@@ -15,12 +16,13 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.email || !formData.password) {
-      return setErrorMessage("please fill out all fields");
+      return setErrorMessage('Please fill out all fields.');
     }
     try {
       //cleaning previous stored errors if any and setting the Loading state true every time the submit happen and stop rendering the submit button till res is get.
       setLoading(true);
       setErrorMessage(null);
+
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -31,16 +33,16 @@ function Signup() {
       if (data.success === false) {
         return setErrorMessage(data.message);
       }
-      setLoading(false); //if everything it right then just change to false and it will stop rendering the loading effect after submit happened and res is ok
-
+     
       if (res.ok) {
         navigate("/sign-in");
       }
     } catch (error) {
       //handling client side error while doing signup submit
       setErrorMessage(error.message);
-      setLoading(false); //if res not okay or some client side error like no internet happen then
+      //if res not okay or some client side error like no internet happen then
       //after error message is displyed again make the loading false to stop rendering the loading effect and render the submit button again
+      setLoading(false);
     }
   };
 

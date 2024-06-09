@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Label, TextInput, Alert, Spinner } from "flowbite-react";
+import { signInStart, signInFailure, signInSuccess } from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function SignIn() {
   const [formData, setFormData] = useState({}); //state storing the formData as an object
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const dispatach = useDispatch();
+  const {loading, error:errorMessage} = useSelector(state=> state.user);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,12 +17,11 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return setErrorMessage("please fill out all fields");
+      dispatach(signInFailure("please fill out all fields"));
     }
     try {
-      //cleaning previous stored errors if any and setting the Loading state true every time the submit happen and stop rendering the submit button till res is get.
-      setLoading(true);
-      setErrorMessage(null);
+      dispatach(signInStart()); //store reducer action
+
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -29,18 +30,18 @@ function SignIn() {
 
       const data = await res.json(); //awaiting res from the server side it will return either "Signup sucessful" or an object {sucess:false, statusCode: statusCode, message:message} from server side if any error occur
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        dispatach(signInFailure(data.message)); //store reducer handling the error or failure 
       }
-      setLoading(false); //if everything it right then just change to false and it will stop rendering the loading effect after submit happened and res is ok
 
       if (res.ok) {
+        dispatach(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
       //handling client side error while doing signup submit
-      setErrorMessage(error.message);
-      setLoading(false); //if res not okay or some client side error like no internet happen then
+       //if res not okay or some client side error like no internet happen then
       //after error message is displyed again make the loading false to stop rendering the loading effect and render the submit button again
+      signInFailure(error.message);
     }
   };
 
