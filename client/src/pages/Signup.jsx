@@ -1,50 +1,48 @@
 import React, { useState } from "react";
-import { Link, useNavigate} from "react-router-dom";
-import { Button, Label, TextInput, Alert, Spinner} from "flowbite-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Label, TextInput, Alert, Spinner } from "flowbite-react";
 
 function Signup() {
- 
   const [formData, setFormData] = useState({}); //state storing the formData as an object
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange =(e)=>{
-      setFormData({...formData, [e.target.id]: e.target.value.trim()}); //we will update the formData by making it a keyvalue pair whichever input is calling the handleChange will give it's id and value
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() }); //we will update the formData by making it a keyvalue pair whichever input is calling the handleChange will give it's id and value
   };
 
-  const handleSubmit= async (e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!formData.username || !formData.email || !formData.password ){
-      return setErrorMessage("please fill out all fields")
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("please fill out all fields");
     }
     try {
       //cleaning previous stored errors if any and setting the Loading state true every time the submit happen and stop rendering the submit button till res is get.
-       setLoading(true);
-       setErrorMessage(null);
-       const res= await fetch('/api/auth/signup',{
-         method: 'POST',
-         headers: {'Content-Type': 'application/json'},
-         body:JSON.stringify(formData)
-       });
+      setLoading(true);
+      setErrorMessage(null);
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-       const data = await res.json(); //awaiting res from the server side it will return either "Signup sucessful" or an object {sucess:false, statusCode: statusCode, message:message} from server side if any error occur
-       if(data.success ===false){
+      const data = await res.json(); //awaiting res from the server side it will return either "Signup sucessful" or an object {sucess:false, statusCode: statusCode, message:message} from server side if any error occur
+      if (data.success === false) {
         return setErrorMessage(data.message);
-       }
-       setLoading(false); //if everything it right then just change to false and it will stop rendering the loading effect after submit happened and res is ok
-      
-       if(res.ok){
-        navigate('/sign-in');
-       }
-     
-      } catch (error) {
-        //handling client side error while doing signup submit
-        setErrorMessage(error.message);
-        setLoading(false); //if res not okay or some client side error like no internet happen then 
-                            //after error message is displyed again make the loading false to stop rendering the loading effect and render the submit button again
+      }
+      setLoading(false); //if everything it right then just change to false and it will stop rendering the loading effect after submit happened and res is ok
+
+      if (res.ok) {
+        navigate("/sign-in");
+      }
+    } catch (error) {
+      //handling client side error while doing signup submit
+      setErrorMessage(error.message);
+      setLoading(false); //if res not okay or some client side error like no internet happen then
+      //after error message is displyed again make the loading false to stop rendering the loading effect and render the submit button again
     }
-  }
+  };
 
   return (
     <div className="min-h-screen mt-20">
@@ -65,40 +63,53 @@ function Signup() {
 
         {/*div for the right side showing the signup form*/}
         <div className="flex-1">
-           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <div>
-                <Label value="your username" />
-                <TextInput type="text" placeholder="username" id="username" onChange={handleChange}/>
-              </div>
-              <div>
-                <Label value="your email" />
-                <TextInput type="email" placeholder="name@company.com" id="email"  onChange={handleChange} />
-              </div>
-              <div>
-                <Label value="your password" />
-                <TextInput type="password" placeholder="password" id="password"  onChange={handleChange}/>
-              </div>
-              <Button gradientDuoTone='greenToBlue' type="submit" disabled ={loading}>
-                {
-                  loading ? (
-                    <Spinner size='sm'/>
-                  ): "SignUp"
-                }
-              </Button>
-           </form>
-           <div className="flex gap-2 text-sm mt-5">
-             <span>Have an account?</span>
-             <Link to="/sign-in" className="text-blue-500">
-                Sign-In
-             </Link>
-           </div>
-           {
-             errorMessage && (
-              <Alert className='mt-5' color='failure'>
-                {errorMessage}
-              </Alert>
-             )
-           }
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <div>
+              <Label value="your username" />
+              <TextInput
+                type="text"
+                placeholder="username"
+                id="username"
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label value="your email" />
+              <TextInput
+                type="email"
+                placeholder="name@company.com"
+                id="email"
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label value="your password" />
+              <TextInput
+                type="password"
+                placeholder="password"
+                id="password"
+                onChange={handleChange}
+              />
+            </div>
+            <Button
+              gradientDuoTone="greenToBlue"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? <Spinner size="sm" /> : "SignUp"}
+            </Button>
+          </form>
+          <div className="flex gap-2 text-sm mt-5">
+            <span>Have an account?</span>
+            <Link to="/sign-in" className="text-blue-500">
+              Sign-In
+            </Link>
+          </div>
+          {errorMessage && (
+            <Alert className="mt-5" color="failure">
+              {errorMessage}
+            </Alert>
+          )}
         </div>
       </div>
     </div>
