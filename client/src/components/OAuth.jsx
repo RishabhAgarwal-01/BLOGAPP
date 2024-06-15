@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from 'flowbite-react';
+
 import {AiFillGoogleCircle} from 'react-icons/ai';
 import {GoogleAuthProvider, signInWithPopup, getAuth} from 'firebase/auth';
 import {app} from '../firebase';
@@ -27,8 +28,8 @@ function OAuth() {
             })
           }
           )
-          // const data= await res.json();
-          console.log(data);
+          const data= await res.json();
+          // console.log(data);
           if (res.ok){
             dispatch(signInSuccess(data))
             navigate('/')
