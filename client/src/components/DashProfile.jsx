@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux'
 import {Button, TextInput, Alert} from 'flowbite-react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage';
 import { app } from '../firebase';
-
+import { updateStart, updateFailure, updateSuccess } from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 function DashProfile() {
     const {currentUser} = useSelector((state) => state.user);
+    const dispatch = useDispatch();
 
     //storing the image file we will get after selection
     const [imageFile, setImageFile] = useState(null); 
@@ -21,11 +23,11 @@ function DashProfile() {
     // const [imageFileUploading, setImageFileUploading] = useState(false);
 
 
-    //
-//     const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
-//   const [updateUserError, setUpdateUserError] = useState(null);
+
+     const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+     const [updateUserError, setUpdateUserError] = useState(null);
 //   const [showModal, setShowModal] = useState(false);
-//   const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({}); //state to store the form data
 
     //handleImageChange called by image input to change the user profile image
     const handleImageChange = (e) => {
@@ -79,13 +81,50 @@ function DashProfile() {
             getDownloadURL(uploadTask.snapshot.ref)
             .then((downloadURL) => { 
                  setImageFileUrl(downloadURL);
-            //   setFormData({ ...formData, profilePicture: downloadURL });
+                 setFormData({ ...formData, profilePicture: downloadURL });
             //   setImageFileUploading(false);
             });
           }
         );
       };
-     console.log(imageFileUploadProgress);
+    //  console.log(imageFileUploadProgress);
+    
+    //handleChange fucntionality
+    const handleChange =(e)=>{
+      setFormData({...formData, [e.target.id]: e.target.value});
+    }
+   
+    //handleSubmit functionality
+    const handleSubmit= async(e)=>{
+      e.preventDefault();
+      setUpdateUserError(null);
+      setUpdateUserSuccess(null);
+      if(Object.keys(formData).length ===0){
+        setUpdateUserError("No chamges Made");
+        return ;
+      }
+      dispatch(updateStart());
+      try {
+        const res = await fetch(`/api/user/update/${currentUser._id}`,{
+          method: "PUT",
+          headers: {
+            'Content-Type' : 'application/json',
+          },
+          body:JSON.stringify(formData),
+        })
+        const data = await res.json();
+        if(!res.ok){
+          dispatch(updateFailure(error.message));
+          setUpdateUserError(error.message);
+        }
+        else{
+          dispatch(updateSuccess(data));
+          setUpdateUserSuccess("User's profile updated successfully")
+        }
+      } catch (error) {
+         dispatch(updateFailure(error.message))
+      }
+    }
 
     //useEffect to upload an image whenever there is an image available in the state
     useEffect(() => {
@@ -97,7 +136,7 @@ function DashProfile() {
     return (
     <div className='max-w-lg mx-auto p-3 w-full'>
     <h1 className='my-7 text-center font-bold text-3xl'>Profile</h1>
-    <form className='flex flex-col gap-4'>
+    <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
 
         <input type='file' accept='image/*' 
         onChange={handleImageChange} 
@@ -119,16 +158,19 @@ function DashProfile() {
         type='text'
         id='username'
         defaultValue={currentUser.username}
+        onChange={handleChange}
         />
         <TextInput 
         type='text'
         id='email'
         defaultValue={currentUser.email}
+        onChange={handleChange}
         />
         <TextInput 
         type='text'
         id='Password'
         placeholder='#Change password'
+        onChange={handleChange}
         />
         <Button type='submit' gradientDuoTone='greenToBlue' outline>
             Update
@@ -139,6 +181,12 @@ function DashProfile() {
          <span className='curser-pointer'>Delete Account</span>
          <span className='curser-pointer'>SignOut</span>
        </div>
+       {updateUserSuccess && (
+          <Alert color='success'>{updateUserSuccess}</Alert>
+        )}
+        {updateUserError && (
+          <Alert color='failure'>{updateUserError}</Alert>
+        )}
     </div>
   )
 }
