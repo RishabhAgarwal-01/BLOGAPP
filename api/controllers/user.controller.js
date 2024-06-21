@@ -8,7 +8,7 @@ export const test = (req, res)=>{
 
 export const updateUser= async (req, res, next)=>{
 //   console.log(req.user)
-if(req.user.id  != req.params.userId){
+if(req.user.id  !== req.params.userId){
     return next(errorHandler(403, 'You are not allowed to update'));
 }
 if(req.body.password){
@@ -43,4 +43,16 @@ if(req.body.password){
         next(error);
     }
  }
+}
+
+export const deleteUser = async(req, res, next)=>{
+    if(req.user.id !== req.params.userId){
+        return next(errorHandler(403, "you're not allowed to delete the account"));
+    }
+    try {
+        await User.findByIdAndDelete(req.params.userId);
+        return res.status(200).json("User has been deleted");
+    } catch (error) {
+        next(error);
+    }
 }
