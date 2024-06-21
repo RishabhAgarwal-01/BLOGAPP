@@ -4,7 +4,7 @@ import {Button, TextInput, Alert, Modal} from 'flowbite-react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage';
 import { app } from '../firebase';
 import { updateStart, updateFailure, updateSuccess,
-  deleteUserFailure, deleteUserStart, deleteUserSuccess
+  deleteUserFailure, deleteUserStart, deleteUserSuccess,signoutSuccess,
  } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import {HiOutlineExclamationCircle} from "react-icons/hi";
@@ -151,6 +151,23 @@ function DashProfile() {
         }
     }
 
+    //signout
+    const handleSignout = async()=>{
+      try {
+        const res= await fetch(`/api/user/signout`, {
+          method: "POST",
+        }); 
+        const data = await res.json();
+        if(!res.ok){
+          console.log(data.message);
+        }else{
+           dispatch(signoutSuccess());
+        }
+      } catch (error) {
+         console.log(error.message)
+      }
+    }
+
     //useEffect to upload an image whenever there is an image available in the state
     useEffect(() => {
         if (imageFile) {
@@ -204,7 +221,7 @@ function DashProfile() {
 
        <div className='text-red-500 flex justify-between mt-5'>
          <span onClick={()=>setShowModal(true)} className='curser-pointer'>Delete Account</span>
-         <span className='curser-pointer'>SignOut</span>
+         <span onClick={handleSignout} className='curser-pointer'>SignOut</span>
        </div>
        {updateUserSuccess && (
           <Alert color='success'>{updateUserSuccess}</Alert>
