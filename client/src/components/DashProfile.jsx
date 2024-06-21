@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import {Link} from "react-router-dom";
 import {Button, TextInput, Alert, Modal} from 'flowbite-react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage';
 import { app } from '../firebase';
@@ -214,9 +215,22 @@ function DashProfile() {
         placeholder='#Change password'
         onChange={handleChange}
         />
-        <Button type='submit' gradientDuoTone='greenToBlue' outline>
+        <Button type='submit' 
+        gradientDuoTone='greenToBlue' 
+        outline>
             Update
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={'/create-post'}> {/*/create-post*/}
+            <Button
+              type='button'
+              gradientDuoTone='greenToBlue'
+              className='w-full'
+            >
+              Create a post
+            </Button>
+          </Link>
+        )}
      </form>
 
        <div className='text-red-500 flex justify-between mt-5'>
