@@ -45,7 +45,7 @@ export const signin = async (req, res, next)=>{
       return next(errorHandler(400, "Invalid Password"));
      }
      
-     const token = jwt.sign({id: validUser._id}, process.env.JWT_SECRET);
+     const token = jwt.sign({id: validUser._id, isAdmin: validUser.isAdmin,}, process.env.JWT_SECRET);
       
      //this is done so that when sending response back to the user, we don't send the password along with it.
      //password: pass will remove the password from the object, ...rest will copy the rest of the data from the validUser._doc which is the document instance in the mongodb
