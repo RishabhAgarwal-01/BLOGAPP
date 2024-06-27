@@ -2,7 +2,7 @@ import Post from "../models/post.model.js";
 import { errorHandler } from "../utils/error.js"
 
 export const create = async(req, res, next) =>{
-  if(!req.user.isAdmin){ //user is the cookie
+  if(req.user.isAdmin === true){ //user is the redux state
     return next(errorHandler(403, "Not authorized to create the post"));
   }
 
