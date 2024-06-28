@@ -2,7 +2,7 @@ import Post from "../models/post.model.js";
 import { errorHandler } from "../utils/error.js"
 
 export const create = async(req, res, next) =>{
-  if(req.user.isAdmin === true){ //user is the redux state
+  if(req.user.isAdmin === true){ //user is the cookie we got back after the JWT token is verified -- in the verifyToken it has the id and isAdmin
     return next(errorHandler(403, "Not authorized to create the post"));
   }
 
