@@ -46,7 +46,7 @@ if(req.body.password){
 }
 
 export const deleteUser = async(req, res, next)=>{
-    if(req.user.id !== req.params.userId){
+    if(req.user.isAdmin ==false  && req.user.id !== req.params.userId){
         return next(errorHandler(403, "you're not allowed to delete the account"));
     }
     try {
