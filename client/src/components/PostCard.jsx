@@ -8,7 +8,7 @@ function PostCard({post}) {
         <img
           src={post.image}
           alt='post cover'
-          className='h-[260px] w-full  object-cover group-hover:h-[200px] transition-all duration-300 z-20'
+          className='h-[220px] w-full  object-cover group-hover:h-[180px] transition-all duration-300 z-20'
         />
       </Link>
       <div className='p-3 flex flex-col gap-2'>
