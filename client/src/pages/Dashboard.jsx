@@ -5,6 +5,7 @@ import DashProfile from '../components/DashProfile';
 import DashPosts from '../components/DashPosts';
 import DashUsers from '../components/DashUsers';
 import DashComment from '../components/DashComment';
+import DashboardComp from '../components/DashboardComp';
 
 function Dashboard() {
   const location= useLocation(); //to get the current location of the path /dashboard/....
@@ -37,6 +38,9 @@ function Dashboard() {
 
            {/*comments */}
            {tab === "comments" && <DashComment /> }
+
+           {/*Dashboard Component */}
+           {tab === "dash" && <DashboardComp /> }
       </div>
     </>
     
