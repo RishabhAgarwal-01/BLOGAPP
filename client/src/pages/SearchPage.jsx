@@ -134,6 +134,11 @@ export default function Search() {
               <option value='reactjs'>React.js</option>
               <option value='nextjs'>Next.js</option>
               <option value='javascript'>JavaScript</option>
+              <option value='mongodb'>MongoDB</option>
+              <option value='nodejs'>Node.js</option>
+              <option value='expressjs'>Expressjs</option>
+              <option value='tailwind'>TailwindCSS</option>
+              <option value='lanchain'>Langchain</option>
             </Select>
           </div>
           <Button type='submit' outline gradientDuoTone='greenToBlue'>
